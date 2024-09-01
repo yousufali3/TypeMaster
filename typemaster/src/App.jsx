@@ -69,8 +69,14 @@ function App() {
     keySound.play();
   };
 
+  const handleKeyPress = (e) => {
+    // console.log(e.key);
+  };
+
   const handleChange = (e) => {
-    if (!timerRunning) {
+    console.log(e.nativeEvent.data);
+
+    if (!timerRunning && e.nativeEvent.data == " ") {
       startTimer();
     } else {
       spaceClicked(e.target.value);
@@ -91,7 +97,7 @@ function App() {
         setCorrectWordString(correctWordString.concat(word.trim()));
         setCorrectWordCount((prevCount) => prevCount + 1);
         setTypedWords((prev) => prev + 1);
-        console.log(typedWords);
+        // console.log(typedWords);
         // console.log(correctWordCount);
       } else {
         const newCorrectWords = [...correctWord];
@@ -99,7 +105,7 @@ function App() {
         setCorrectWord(newCorrectWords);
         setWrongWordCount((prevCount) => prevCount + 1);
         setTypedWords((prev) => prev + 1);
-        console.log(typedWords);
+        // console.log(typedWords);
       }
 
       setActiveWord((index) => index + 1);
@@ -110,10 +116,14 @@ function App() {
   };
 
   useEffect(() => {
-    console.log(correctWordString);
-    console.log(correctWordCount);
+    // console.log(correctWordString);
+    // console.log(correctWordCount);
   }, [correctWordString]);
 
+  const averageWordLength = 4;
+  const secondsElapsed = 30 - timer;
+  const wordsTyped = correctWordString.length / averageWordLength;
+  const speed = Math.round((wordsTyped / secondsElapsed) * 60);
   return !timerStopped || testRunning ? (
     <>
       <div
@@ -214,21 +224,22 @@ function App() {
         <input
           type="text"
           id="inputBox"
-          className="mb-10 h-10 w-[15rem] p-5 bg-[#d4a373] rounded-xl text-slate-900 font-bold border-[3px] border-[#fefae0] outline-none focus:bg-[#fefae0] focus:border-[3px] focus:border-[#d4a373]
-        
-        sm:mb-10 sm:h-14 sm:w-[30rem] sm:p-5 sm:bg-[#d4a373] sm:rounded-xl sm:text-slate-900 sm:font-bold sm:border-[3px] sm:border-[#fefae0] sm:outline-none sm:focus:bg-[#fefae0] sm:focus:border-[3px] sm:focus:border-[#d4a373]
-        
-        md:mb-10 md:h-14 md:w-[35rem] md:p-5 md:bg-[#d4a373] md:rounded-xl md:text-slate-900 md:font-bold md:border-[3px] md:border-[#fefae0] md:outline-none md:focus:bg-[#fefae0] md:focus:border-[3px] md:focus:border-[#d4a373]
-        
-        lg:mb-10 lg:h-14 lg:w-[40rem] lg:p-5 lg:bg-[#d4a373] lg:rounded-xl lg:text-slate-900 lg:font-bold lg:border-[3px] lg:border-[#fefae0] lg:outline-none lg:focus:bg-[#fefae0] lg:focus:border-[3px] lg:focus:border-[#d4a373]
-        
-        xl:mb-10 xl:h-14 xl:w-[40rem] xl:p-5 xl:bg-[#d4a373] xl:rounded-xl xl:text-slate-900 xl:font-bold xl:border-[3px] xl:border-[#fefae0] xl:outline-none xl:focus:bg-[#fefae0] xl:focus:border-[3px] xl:focus:border-[#d4a373]
-        
-        2xl:mb-10 2xl:h-14 2xl:w-[40rem] 2xl:p-5 2xl:bg-[#d4a373] 2xl:rounded-xl 2xl:text-slate-900 2xl:font-bold 2xl:border-[3px] 2xl:border-[#fefae0] 2xl:outline-none 2xl:focus:bg-[#fefae0] 2xl:focus:border-[3px] 2xl:focus:border-[#d4a373]"
+          placeholder={
+            timerRunning ? "" : "Press space to start the typing test"
+          }
+          className="
+    mb-6 h-12 w-[45%] p-3 bg-[#d3b596] rounded-lg text-slate-900 font-semibold border-2 border-[#fefae0] outline-none
+    focus:bg-[#fefae0] focus:border-[#d4a373] placeholder:text-slate-700 placeholder:font-medium
+    sm:mb-6 sm:h-12 sm:p-3 
+    md:mb-6 md:h-12 md:p-3
+    lg:mb-6 lg:h-12 lg:p-3
+    xl:mb-6 xl:h-12 xl:p-3 xl:w:30%
+    2xl:mb-6 2xl:h-12 2xl:p-3
+  "
           value={currentWord}
-          // onChange={(e) => spaceClicked(e.target.value)}
           onChange={handleChange}
           onKeyDown={keyPressed}
+          onKeyPress={handleKeyPress}
         />
       </div>
     </>
@@ -237,7 +248,7 @@ function App() {
       correctWords={correctWordCount}
       wrongWords={wrongWordCount}
       accuracy={Math.round((correctWordCount / typedWords) * 100)}
-      speed={Math.round((correctWordString.length * 2) / 3.5)}
+      speed={speed}
       takeTest={takeTestAgain}
     />
   );
